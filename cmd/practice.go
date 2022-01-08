@@ -4,11 +4,11 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
+	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
-    "sort"
-    "os"
 )
 
 func workertesting(done chan bool) {
@@ -383,70 +383,71 @@ func states() {
 	fmt.Println("readOps:", readOpsFinal)
 	writeOpsFinal := atomic.LoadUint64(&writeOps)
 	fmt.Println("writeOps:", writeOpsFinal)
-    fmt.Println("total operation", readOpsFinal + writeOpsFinal)
+	fmt.Println("total operation", readOpsFinal+writeOpsFinal)
 }
 
-func sorting(){ 
-    ints := []int{1,2,5,3,9,6}
-    sort.Ints(ints)
-    fmt.Println("Ints : sorting",ints)
-    fmt.Println("checking if ints are sorted or not ( with builtint functions)")
-    s := sort.IntsAreSorted(ints)
-    fmt.Println("Sorted ? ", s)
+func sorting() {
+	ints := []int{1, 2, 5, 3, 9, 6}
+	sort.Ints(ints)
+	fmt.Println("Ints : sorting", ints)
+	fmt.Println("checking if ints are sorted or not ( with builtint functions)")
+	s := sort.IntsAreSorted(ints)
+	fmt.Println("Sorted ? ", s)
 }
 
 type byLength []string
-func (s byLength) Len() int { 
-    return len(s)
+
+func (s byLength) Len() int {
+	return len(s)
 }
 
-func(s byLength) Swap(i,j int) { 
-    s[i], s[j] = s[j], s[i]
+func (s byLength) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
-func (s byLength)Less(i,j int) bool { 
-    return len(s[i]) < len(s[j])
+func (s byLength) Less(i, j int) bool {
+	return len(s[i]) < len(s[j])
 }
 
-func sorting2() { 
-    fruits := []string{"peach", "banana", "kiwi"}
-    fmt.Println("Before sorting,",fruits)
-    sort.Sort(byLength(fruits))
-    fmt.Println("After sorting,",fruits)
+func sorting2() {
+	fruits := []string{"peach", "banana", "kiwi"}
+	fmt.Println("Before sorting,", fruits)
+	sort.Sort(byLength(fruits))
+	fmt.Println("After sorting,", fruits)
 }
 
 // returns pointer to the file descriptor
-func createFile(p string) *os.File { 
-    fmt.Println("creating",p)
-    f ,err := os.Create(p)
-    if err != nil { 
-        panic(err)
-    }
-    return f
+func createFile(p string) *os.File {
+	fmt.Println("creating", p)
+	f, err := os.Create(p)
+	if err != nil {
+		panic(err)
+	}
+	return f
 }
 
-func writeFile(f *os.File) { 
-    fmt.Println("writing to file")
-    fmt.Fprintf(f, "data")
+func writeFile(f *os.File) {
+	fmt.Println("writing to file")
+	fmt.Fprintf(f, "data")
 }
-func closeFile(f *os.File) { 
-    fmt.Println("closing file ")
-    err := f.Close()
-    if err != nil { 
-        // printing to StdErr output stream
-        fmt.Fprintf(os.Stderr, "error: &v\n", err)
-        os.Exit(1)
-    }
+func closeFile(f *os.File) {
+	fmt.Println("closing file ")
+	err := f.Close()
+	if err != nil {
+		// printing to StdErr output stream
+		fmt.Fprintf(os.Stderr, "error: &v\n", err)
+		os.Exit(1)
+	}
 }
 
-func fileoperation(){ 
-    f := createFile("defer.txt")
-    defer closeFile(f)
-    writeFile(f)
+func fileoperation() {
+	f := createFile("defer.txt")
+	defer closeFile(f)
+	writeFile(f)
 
 }
 
 // Main Method
 func main() {
-	sorting2()
+	fileoperation()
 }
