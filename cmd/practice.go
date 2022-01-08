@@ -9,6 +9,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+    "github.com/emirpasic/gods/sets/hashset"
 )
 
 func workertesting(done chan bool) {
@@ -444,10 +445,46 @@ func fileoperation() {
 	f := createFile("defer.txt")
 	defer closeFile(f)
 	writeFile(f)
+}
 
+func panictest() { 
+    panic("crasing server")
+}
+
+func panicControlTest(){
+    // Defered anonymous function
+    defer func() { 
+        if r := recover() ; r!= nil { 
+            fmt.Println("Recovered from crash ",r)
+        }
+    }()
+
+    panictest()
+    fmt.Println("After crashing server")
+}
+
+func Index(haystack []string, needle string) int { 
+    for index , value := range haystack { 
+        if value == needle  { 
+            return index
+        }
+    } 
+    return -1
+}
+
+func Include(haystack []string, t string) bool { 
+    return Index(haystack, t) >= 0 
+}
+
+func hashsettest() { 
+    set := hashset.New()
+    set.Add(1)
+    set.Add(2)
+    fmt.Println("Set is ", set)
+    fmt.Println("Does set contains 2 ? ", set.Contains(2))
 }
 
 // Main Method
 func main() {
-	fileoperation()
+	hashsettest()
 }
