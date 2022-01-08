@@ -394,7 +394,28 @@ func sorting(){
     fmt.Println("Sorted ? ", s)
 }
 
+type byLength []string
+func (s byLength) Len() int { 
+    return len(s)
+}
+
+func(s byLength) Swap(i,j int) { 
+    s[i], s[j] = s[j], s[i]
+}
+
+func (s byLength)Less(i,j int) bool { 
+    return len(s[i]) < len(s[j])
+}
+
+func sorting2() { 
+    fruits := []string{"peach", "banana", "kiwi"}
+    fmt.Println("Before sorting,",fruits)
+    sort.Sort(byLength(fruits))
+    fmt.Println("After sorting,",fruits)
+}
+
+
 // Main Method
 func main() {
-	sorting()
+	sorting2()
 }
