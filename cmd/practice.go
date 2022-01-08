@@ -7,6 +7,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+    "sort"
 )
 
 func workertesting(done chan bool) {
@@ -384,7 +385,16 @@ func states() {
     fmt.Println("total operation", readOpsFinal + writeOpsFinal)
 }
 
+func sorting(){ 
+    ints := []int{1,2,5,3,9,6}
+    sort.Ints(ints)
+    fmt.Println("Ints : sorting",ints)
+    fmt.Println("checking if ints are sorted or not ( with builtint functions)")
+    s := sort.IntsAreSorted(ints)
+    fmt.Println("Sorted ? ", s)
+}
+
 // Main Method
 func main() {
-	states()
+	sorting()
 }
