@@ -344,7 +344,7 @@ func states() {
 		}
 	}()
 
-	// goroutines for reading operations
+	// Goroutines for reading Operations
 	for r := 0; r < 100; r++ {
 		go func() {
 			// infinte loop
