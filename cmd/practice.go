@@ -3,8 +3,8 @@ package main
 // importing statements
 import (
 	"fmt"
+	"math/rand"
 	"sync"
-    "math/rand"
 	"sync/atomic"
 	"time"
 )
@@ -279,45 +279,112 @@ func atomiccounter() {
 }
 
 // accessing data safely accorss goroutines
-type Container struct { 
-    mu sync.Mutex
-    counters map[string]int
+type Container struct {
+	mu       sync.Mutex
+	counters map[string]int
 }
 
-func ( c *Container ) inc(name string) { 
-    c.mu.Lock()
-    defer c.mu.Unlock()
-    c.counters[name]++
+func (c *Container) inc(name string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.counters[name]++
 }
 
-func mutexUse() { 
-    c := Container { 
-        counters : map[string] int { "a" : 0 , "b" : 0 },
-    }
+func mutexUse() {
+	c := Container{
+		counters: map[string]int{"a": 0, "b": 0},
+	}
 
-    var wg sync.WaitGroup
-    //closure function ( similar to lambda function in python)
-    doIncrement := func(name string, n int) { 
-        for i := 0 ; i < n ; i++  { 
-            c.inc(name)
-        }
-        wg.Done()
-    } 
-    wg.Add(3)
-    // Increment Values Concurrently
-    go doIncrement("a",10000)
-    go doIncrement("a",10000)
-    go doIncrement("b",10000)
-    wg.Wait()
-    fmt.Println(c.counters)
+	var wg sync.WaitGroup
+	//closure function ( similar to lambda function in python)
+	doIncrement := func(name string, n int) {
+		for i := 0; i < n; i++ {
+			c.inc(name)
+		}
+		wg.Done()
+	}
+	wg.Add(3)
+	// Increment Values Concurrently
+	go doIncrement("a", 10000)
+	go doIncrement("a", 10000)
+	go doIncrement("b", 10000)
+	wg.Wait()
+	fmt.Println(c.counters)
 }
 
 // stateful goroutines
-func states() { 
+type readOp struct {
+	key  int
+	resp chan int // reponse channel
+}
 
+type writeOp struct {
+	key  int
+	val  int
+	resp chan bool // response channel
+}
+
+func states() {
+	var readOps uint64
+	var writeOps uint64
+
+	reads := make(chan readOp)
+	writes := make(chan writeOp)
+
+	go func() {
+		var state = make(map[int]int)
+		for {
+			select {
+			case read := <-reads:
+				read.resp <- state[read.key]
+			case write := <-writes:
+				state[write.key] = write.val
+				write.resp <- true
+			}
+		}
+	}()
+
+	// goroutines for reading operations
+	for r := 0; r < 100; r++ {
+		go func() {
+			// infinte loop
+			for {
+				read := readOp{
+					key:  rand.Intn(5),
+					resp: make(chan int)}
+				reads <- read
+				<-read.resp
+				atomic.AddUint64(&readOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	//  goroutines for writing operation
+	for w := 0; w < 10; w++ {
+		go func() {
+			for {
+				write := writeOp{
+					key:  rand.Intn(5),
+					val:  rand.Intn(100),
+					resp: make(chan bool)}
+				writes <- write
+				<-write.resp
+				atomic.AddUint64(&writeOps, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	time.Sleep(time.Second)
+	readOpsFinal := atomic.LoadUint64(&readOps)
+	fmt.Println("readOps:", readOpsFinal)
+	writeOpsFinal := atomic.LoadUint64(&writeOps)
+	fmt.Println("writeOps:", writeOpsFinal)
+    fmt.Println("total operation", readOpsFinal + writeOpsFinal)
 }
 
 // Main Method
 func main() {
-	mutexUse()
+	states()
 }
