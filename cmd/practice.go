@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 	"time"
     "sort"
+    "os"
 )
 
 func workertesting(done chan bool) {
@@ -414,6 +415,36 @@ func sorting2() {
     fmt.Println("After sorting,",fruits)
 }
 
+// returns pointer to the file descriptor
+func createFile(p string) *os.File { 
+    fmt.Println("creating",p)
+    f ,err := os.Create(p)
+    if err != nil { 
+        panic(err)
+    }
+    return f
+}
+
+func writeFile(f *os.File) { 
+    fmt.Println("writing to file")
+    fmt.Fprintf(f, "data")
+}
+func closeFile(f *os.File) { 
+    fmt.Println("closing file ")
+    err := f.Close()
+    if err != nil { 
+        // printing to StdErr output stream
+        fmt.Fprintf(os.Stderr, "error: &v\n", err)
+        os.Exit(1)
+    }
+}
+
+func fileoperation(){ 
+    f := createFile("defer.txt")
+    defer closeFile(f)
+    writeFile(f)
+
+}
 
 // Main Method
 func main() {
