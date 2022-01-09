@@ -2,16 +2,18 @@ package main
 
 // importing statements
 import (
+	"bufio"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/emirpasic/gods/sets/hashset"
+	// "io"
 	"math/rand"
 	"os"
 	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
-    "crypto/sha1"
 )
 
 func workertesting(done chan bool) {
@@ -496,26 +498,54 @@ type reponse2 struct {
 }
 
 func jsonTest() {
-    res1D := &response1 { 
-        Page : 1, 
-        Fruits : []string{"apple", "peach", "pear"}} 
-    res1B, _ := json.Marshal(res1D)
-    fmt.Println(string(res1B))
+	res1D := &response1{
+		Page:   1,
+		Fruits: []string{"apple", "peach", "pear"}}
+	res1B, _ := json.Marshal(res1D)
+	fmt.Println(string(res1B))
 }
 
-func hash() { 
-    s := "Testing String"
-    h := sha1.New()
-    b := []byte(s)
-    h.Write(b)
-    bs := h.Sum(nil)
-    fmt.Println(s)
-    fmt.Printf("%x\n",bs)
-    fmt.Println(string([]byte(s))) 
+func hash() {
+	s := "Testing String"
+	h := sha1.New()
+	b := []byte(s)
+	h.Write(b)
+	bs := h.Sum(nil)
+	fmt.Println(s)
+	fmt.Printf("%x\n", bs)
+	fmt.Println(string([]byte(s)))
+
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func readFile() {
+	// data : []byte
+	// dat , err := os.ReadFile("defer.txt")
+	// check(err)
+	// fmt.Print(string(dat))
+
+	f, err := os.Open("defer.txt")
+  // defer f.Close() // close this file before exiting this function
+	check(err)
+	b1 := make([]byte, 5) // only reads 5 bytes
+	n1, err := f.Read(b1)
+	check(err)
+	fmt.Printf("%d bytes : %s\n", n1, string(b1[:n1]))
+
+  r := bufio.NewReader(f)
+  b4, err := r.Peek(5)
+  check(err)
+  fmt.Printf("5 bytes: %s\n",string(b4))
+  f.Close()
 
 }
 
 // Main Method
 func main() {
-    hash()
+	readFile()
 }
