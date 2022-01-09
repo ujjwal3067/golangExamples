@@ -11,6 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+    "crypto/sha1"
 )
 
 func workertesting(done chan bool) {
@@ -502,8 +503,19 @@ func jsonTest() {
     fmt.Println(string(res1B))
 }
 
+func hash() { 
+    s := "Testing String"
+    h := sha1.New()
+    b := []byte(s)
+    h.Write(b)
+    bs := h.Sum(nil)
+    fmt.Println(s)
+    fmt.Printf("%x\n",bs)
+    fmt.Println(string([]byte(s))) 
+
+}
 
 // Main Method
 func main() {
-	jsonTest()
+    hash()
 }
