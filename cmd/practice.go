@@ -14,6 +14,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+  "strings"
 )
 
 func workertesting(done chan bool) {
@@ -542,10 +543,30 @@ func readFile() {
   check(err)
   fmt.Printf("5 bytes: %s\n",string(b4))
   f.Close()
+}
 
+func writeToFile() { 
+  d1 := []byte("Golang example of writing to file")
+  err := os.WriteFile("defer.txt", d1, 0644)
+  check(err)
+  f, err := os.Create("dat2.txt")
+  check(err)
+  defer f.Close()
+}
+
+func filters() { 
+  scanner := bufio.NewScanner(os.Stdin)
+  for scanner.Scan() { 
+    ucl := strings.ToUpper(scanner.Text())
+    fmt.Println(ucl)
+  }
+  if err := scanner.Err() ; err != nil { 
+    fmt.Fprintln(os.Stderr, "error:", err)
+    os.Exit(1)
+  }
 }
 
 // Main Method
 func main() {
-	readFile()
+	filters()
 }

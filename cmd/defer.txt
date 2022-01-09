@@ -1,1 +1,1 @@
-data
+Golang example of writing to file
