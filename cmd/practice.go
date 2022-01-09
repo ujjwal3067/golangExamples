@@ -2,14 +2,15 @@ package main
 
 // importing statements
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/emirpasic/gods/sets/hashset"
 	"math/rand"
 	"os"
 	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
-    "github.com/emirpasic/gods/sets/hashset"
 )
 
 func workertesting(done chan bool) {
@@ -447,44 +448,62 @@ func fileoperation() {
 	writeFile(f)
 }
 
-func panictest() { 
-    panic("crasing server")
+func panictest() {
+	panic("crasing server")
 }
 
-func panicControlTest(){
-    // Defered anonymous function
-    defer func() { 
-        if r := recover() ; r!= nil { 
-            fmt.Println("Recovered from crash ",r)
-        }
-    }()
+func panicControlTest() {
+	// Defered anonymous function
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered from crash ", r)
+		}
+	}()
 
-    panictest()
-    fmt.Println("After crashing server")
+	panictest()
+	fmt.Println("After crashing server")
 }
 
-func Index(haystack []string, needle string) int { 
-    for index , value := range haystack { 
-        if value == needle  { 
-            return index
-        }
-    } 
-    return -1
+func Index(haystack []string, needle string) int {
+	for index, value := range haystack {
+		if value == needle {
+			return index
+		}
+	}
+	return -1
 }
 
-func Include(haystack []string, t string) bool { 
-    return Index(haystack, t) >= 0 
+func Include(haystack []string, t string) bool {
+	return Index(haystack, t) >= 0
 }
 
-func hashsettest() { 
-    set := hashset.New()
-    set.Add(1)
-    set.Add(2)
-    fmt.Println("Set is ", set)
-    fmt.Println("Does set contains 2 ? ", set.Contains(2))
+func hashsettest() {
+	set := hashset.New()
+	set.Add(1)
+	set.Add(2)
+	fmt.Println("Set is ", set)
+	fmt.Println("Does set contains 2 ? ", set.Contains(2))
 }
+
+type response1 struct {
+	Page   int
+	Fruits []string
+}
+type reponse2 struct {
+	Page   int      `json:"page"`
+	Fruits []string `json:"fruits"`
+}
+
+func jsonTest() {
+    res1D := &response1 { 
+        Page : 1, 
+        Fruits : []string{"apple", "peach", "pear"}} 
+    res1B, _ := json.Marshal(res1D)
+    fmt.Println(string(res1B))
+}
+
 
 // Main Method
 func main() {
-	hashsettest()
+	jsonTest()
 }
