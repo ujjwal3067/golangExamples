@@ -7,14 +7,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/emirpasic/gods/sets/hashset"
+	"testing"
 	// "io"
 	"math/rand"
 	"os"
 	"sort"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
-  "strings"
 )
 
 func workertesting(done chan bool) {
@@ -441,7 +442,7 @@ func closeFile(f *os.File) {
 	err := f.Close()
 	if err != nil {
 		// printing to StdErr output stream
-		fmt.Fprintf(os.Stderr, "error: &v\n", err)
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -531,42 +532,77 @@ func readFile() {
 	// fmt.Print(string(dat))
 
 	f, err := os.Open("defer.txt")
-  // defer f.Close() // close this file before exiting this function
+	// defer f.Close() // close this file before exiting this function
 	check(err)
 	b1 := make([]byte, 5) // only reads 5 bytes
 	n1, err := f.Read(b1)
 	check(err)
 	fmt.Printf("%d bytes : %s\n", n1, string(b1[:n1]))
 
-  r := bufio.NewReader(f)
-  b4, err := r.Peek(5)
-  check(err)
-  fmt.Printf("5 bytes: %s\n",string(b4))
-  f.Close()
+	r := bufio.NewReader(f)
+	b4, err := r.Peek(5)
+	check(err)
+	fmt.Printf("5 bytes: %s\n", string(b4))
+	f.Close()
 }
 
-func writeToFile() { 
-  d1 := []byte("Golang example of writing to file")
-  err := os.WriteFile("defer.txt", d1, 0644)
-  check(err)
-  f, err := os.Create("dat2.txt")
-  check(err)
-  defer f.Close()
+func writeToFile() {
+	d1 := []byte("Golang example of writing to file")
+	err := os.WriteFile("defer.txt", d1, 0644)
+	check(err)
+	f, err := os.Create("dat2.txt")
+	check(err)
+	defer f.Close()
 }
 
-func filters() { 
-  scanner := bufio.NewScanner(os.Stdin)
-  for scanner.Scan() { 
-    ucl := strings.ToUpper(scanner.Text())
-    fmt.Println(ucl)
-  }
-  if err := scanner.Err() ; err != nil { 
-    fmt.Fprintln(os.Stderr, "error:", err)
-    os.Exit(1)
-  }
+func filters() {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		ucl := strings.ToUpper(scanner.Text())
+		fmt.Println(ucl)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
+func IntMin(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func TestIntMinBasic(t *testing.T) {
+	ans := IntMin(2, -2)
+	if ans != -2 {
+		t.Errorf("IntMin(2,-2) = %d; want -2", ans)
+	}
+}
+
+func TestIntMinTableDriven(t *testing.T) {
+	var tests = []struct {
+		a, b int
+		want int
+	}{
+		{0, 1, 0},
+		{1, 0, 0},
+		{2, -2, -2},
+		{0, -1, -1},
+		{-1, 0, -1},
+	}
+	for _, tt := range tests {
+		testname := fmt.Sprintf("%d,%d", tt.a, tt.b)
+		t.Run(testname, func(t *testing.T) {
+			ans := IntMin(tt.a, tt.b)
+			if ans != tt.want {
+				t.Errorf("got %d, want %d", ans, tt.want)
+			}
+		})
+	}
 }
 
 // Main Method
 func main() {
-	filters()
 }
