@@ -603,6 +603,36 @@ func TestIntMinTableDriven(t *testing.T) {
 	}
 }
 
+// []int = slice
+func binarySearch(arr []int, target int) int {
+	NOT_FOUND := -1
+	low := 0
+	high := len(arr) - 1
+	for low <= high {
+		mid := (low + high) / 2
+    value := arr[mid]
+		if value == target {
+			return mid
+		} else if value < target {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+	}
+	return NOT_FOUND
+}
+func binaryTest() {
+	arr := []int{1, 2, 3, 4, 5, 6}
+	target := 5
+	index := binarySearch(arr, target)
+	if index != -1 {
+		fmt.Printf("target %d is at index %d\n", target, index)
+	} else {
+		fmt.Println("target value NOT FOUND")
+	}
+}
+
 // Main Method
 func main() {
+	binaryTest()
 }
