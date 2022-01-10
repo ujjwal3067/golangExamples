@@ -592,6 +592,7 @@ func TestIntMinTableDriven(t *testing.T) {
 		{0, -1, -1},
 		{-1, 0, -1},
 	}
+	// Looping over all the tests cases in the data table 
 	for _, tt := range tests {
 		testname := fmt.Sprintf("%d,%d", tt.a, tt.b)
 		t.Run(testname, func(t *testing.T) {
