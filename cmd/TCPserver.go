@@ -1,3 +1,4 @@
+// server script
 package main
 import ( 
   "bufio"
@@ -7,6 +8,15 @@ import (
   "strings"
   "time"
 )
+func args() -> string { 
+	arguments := os.Args
+	if len(arguments) == 1 { 
+		fmt.Println("please provide port number" ) 
+		return "" 
+	} 
+	return arguments[1]
+
+} 
 
 func main() { 
   arguments := os.Args 

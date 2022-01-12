@@ -508,6 +508,7 @@ func jsonTest() {
 	fmt.Println(string(res1B))
 }
 
+
 func hash() {
 	s := "Testing String"
 	h := sha1.New()
@@ -525,6 +526,7 @@ func check(e error) {
 	}
 }
 
+// Read from file example
 func readFile() {
 	// data : []byte
 	// dat , err := os.ReadFile("defer.txt")
@@ -606,7 +608,7 @@ func TestIntMinTableDriven(t *testing.T) {
 
 // []int = slice
 func binarySearch(arr []int, target int) int {
-	NOT_FOUND := -1
+	NOT_FOUND := -1 // default case
 	low := 0
 	high := len(arr) - 1
 	for low <= high {
@@ -622,6 +624,15 @@ func binarySearch(arr []int, target int) int {
 	}
 	return NOT_FOUND
 }
+
+func initialzingMatrix(rows, cols int) [][]int { 
+  matrix := make([][]int, rows)
+  for i := range matrix { 
+    matrix[i]  = make([]int, cols)
+  }
+  return matrix
+}
+
 func binaryTest() {
 	arr := []int{1, 2, 3, 4, 5, 6}
 	target := 5
@@ -633,7 +644,14 @@ func binaryTest() {
 	}
 }
 
+func prettyPrintMatrix(matrix [][]int) { 
+  for _, row := range matrix { 
+    fmt.Println(row)
+  }
+}
+
 // Main Method
-func run() {
-	binaryTest()
+func main() {
+  matrix := initialzingMatrix(4,4)
+  prettyPrintMatrix(matrix)
 }
