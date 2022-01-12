@@ -1,6 +1,6 @@
 package main
 
-// importing statements
+// Importing Statements
 import (
 	"bufio"
 	"crypto/sha1"
@@ -126,6 +126,7 @@ func closing() {
 	jobs := make(chan int, 5)
 	done := make(chan bool)
 
+  // starting new goroutine 
 	go func() {
 		for {
 			j, isChannelClosed := <-jobs
@@ -516,7 +517,6 @@ func hash() {
 	fmt.Println(s)
 	fmt.Printf("%x\n", bs)
 	fmt.Println(string([]byte(s)))
-
 }
 
 func check(e error) {
@@ -634,6 +634,6 @@ func binaryTest() {
 }
 
 // Main Method
-func main() {
+func run() {
 	binaryTest()
 }

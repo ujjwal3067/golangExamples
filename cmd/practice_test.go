@@ -602,7 +602,5 @@ func TestIntMinTableDriven(t *testing.T) {
 		})
 	}
 }
-
-// Main Method
-func main() {
+func run2() { 
 }
