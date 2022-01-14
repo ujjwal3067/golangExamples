@@ -138,7 +138,7 @@ func closing() {
 				return
 			}
 		}
-	}()
+	}() // end of anonymouse function 
 
 	for j := 1; j <= 3; j++ {
 		jobs <- j
@@ -651,8 +651,8 @@ func prettyPrintMatrix(matrix [][]int) {
 }
 
 
-// Main Method
-func main() {
+// Main Method is in server scripts
+func run() {
   matrix := initialzingMatrix(4,4)
   prettyPrintMatrix(matrix)
 }

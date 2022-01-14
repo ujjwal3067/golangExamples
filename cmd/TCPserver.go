@@ -1,4 +1,4 @@
-// server script
+// Server Script
 package main
 import ( 
   "bufio"
@@ -8,6 +8,7 @@ import (
   "strings"
   "time"
 )
+
 func args() -> string { 
 	arguments := os.Args
 	if len(arguments) == 1 { 
@@ -30,7 +31,7 @@ func main() {
     fmt.Println(err)
     return 
   }
-  defer l.Close()
+  defer l.Close() // closing connection before leaving this method 
   c ,err := l.Accept() 
   if err != nil  { 
     fmt.Println(err)
